@@ -1,0 +1,27 @@
+version: '3'
+
+volumes:
+  db-data:
+    external: false
+
+services:
+  web:
+    image: doteka/rna-api
+    build:
+      context: .
+    depends_on:
+      - db
+    ports:
+      - 5000:5000
+    env_file:
+      - .env
+    command: npm run start
+
+  db:
+    image: postgres:11-alpine
+    volumes:
+      - db-data:/var/lib/postgresql/db-data
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
