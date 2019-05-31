@@ -24,8 +24,11 @@ export async function drop(): Promise<void> {
 
 // Initial DB migration
 export async function migrate(): Promise<void> {
-  // Install extension
-  await query(sql`CREATE EXTENSION fuzzystrmatch;`);
+  // Install extensions
+  await query(sql`
+    CREATE EXTENSION fuzzystrmatch;
+    CREATE EXTENSION pg_trgm;
+  `);
 
   // Our table
   await query(sql`
@@ -33,6 +36,8 @@ export async function migrate(): Promise<void> {
       id SERIAL,
       dna_string TEXT
     );
+
+    CREATE INDEX idx_like ON dna USING gin(dna_string gin_trgm_ops);
   `);
 }
 
