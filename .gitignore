@@ -86,3 +86,9 @@ typings/
 
 # DynamoDB Local files
 .dynamodb/
+
+# build artefacts
+built/**
+
+# editor settings
+.vscode/**
