@@ -53,6 +53,7 @@ export async function search(
 ): Promise<string[]> {
   let result;
   if (levenshtein !== 0) {
+    // fuzzy search
     result = await query(sql`
       SELECT *
       FROM dna
@@ -60,6 +61,7 @@ export async function search(
       ORDER BY levenshtein(dna_string, ${substring}) DESC;
     `);
   } else {
+    // indexed LIKE search
     result = await query(
       sql`SELECT * FROM dna WHERE dna_string LIKE '%' || ${substring} || '%';`
     );
