@@ -2,6 +2,8 @@
 
 ## Part 1
 
+The implementation is provided in this repository, and should be runnable provided docker + docker-compose is installed and ports 80 and 5432 are available.
+
 ### dna-api
 
 > REST API for storing and searching DNA strings.
