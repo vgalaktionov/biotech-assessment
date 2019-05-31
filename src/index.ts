@@ -1,7 +1,9 @@
 import api from "./api";
+import { migrate } from "./db";
 
 const port = process.env.PORT || 5000;
 
-api.listen(port);
+migrate();
 
+api.listen(port);
 console.debug(`Server listening on port ${port}`);
