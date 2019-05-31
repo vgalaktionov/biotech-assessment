@@ -1,18 +1,19 @@
 {
-  "name": "rna-api",
+  "name": "dna-api",
   "version": "1.0.0",
-  "description": "REST API for storing and searching RNA strings.",
+  "description": "REST API for storing and searching DNA strings.",
   "main": "src/index.ts",
   "scripts": {
     "start": "NODE_ENV=production pm2 start ./built/index.js -i max",
     "build": "tsc",
+    "build:prod": "docker-compose build web",
     "watch": "nodemon -e ts --watch './src/**/*' --exec 'npx tsc && node ./built/index.js'",
     "dev": "docker-compose up -d",
     "test": "docker-compose run web bash -c 'NODE_ENV=TEST npx jest --watchAll'"
   },
   "repository": {
     "type": "git",
-    "url": "github.com/vgalaktionov/rna-api"
+    "url": "github.com/vgalaktionov/dna-api"
   },
   "author": "Vadim Galaktionov",
   "license": "GPL-3.0-or-later",

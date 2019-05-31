@@ -1,1 +1,1 @@
-CREATE DATABASE "test-rna-api";
+CREATE DATABASE "test-dna-api";

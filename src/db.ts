@@ -29,17 +29,17 @@ export async function migrate(): Promise<void> {
 
   // Our table
   await query(sql`
-    CREATE TABLE IF NOT EXISTS rna (
+    CREATE TABLE IF NOT EXISTS dna (
       id SERIAL,
-      rna_string TEXT
+      dna_string TEXT
     );
   `);
 }
 
-export async function create(...rna: string[]): Promise<void> {
+export async function create(...dna: string[]): Promise<void> {
   // support bulk creation
-  const values = join(rna.map(s => sql`(${s})`), ",");
-  await query(sql`INSERT INTO rna (rna_string) VALUES ${values}`);
+  const values = join(dna.map(s => sql`(${s})`), ",");
+  await query(sql`INSERT INTO dna (dna_string) VALUES ${values}`);
 }
 
 export async function search(
@@ -50,16 +50,16 @@ export async function search(
   if (levenshtein !== 0) {
     result = await query(sql`
       SELECT *
-      FROM rna
-      WHERE levenshtein(rna_string, ${substring}) <= ${levenshtein}
-      ORDER BY levenshtein(rna_string, ${substring}) DESC;
+      FROM dna
+      WHERE levenshtein(dna_string, ${substring}) <= ${levenshtein}
+      ORDER BY levenshtein(dna_string, ${substring}) DESC;
     `);
   } else {
     result = await query(
-      sql`SELECT * FROM rna WHERE rna_string LIKE '%' || ${substring} || '%';`
+      sql`SELECT * FROM dna WHERE dna_string LIKE '%' || ${substring} || '%';`
     );
   }
-  return result.rows.map(r => r.rna_string);
+  return result.rows.map(r => r.dna_string);
 }
 
 // for healthcheck

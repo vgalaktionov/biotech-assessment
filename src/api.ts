@@ -5,8 +5,8 @@ import "express-async-errors";
 import { create, search, ping } from "./db";
 
 function validate(input: string): void {
-  if (!/^(A|U|C|G)+$/.test(input)) {
-    throw new HttpException("Invalid RNA string!", 400);
+  if (!/^(A|T|C|G)+$/.test(input)) {
+    throw new HttpException("Invalid DNA string!", 400);
   }
 }
 
@@ -27,13 +27,13 @@ const api = express()
     res.sendStatus(200);
   })
 
-  .post("/rna", async (req: express.Request, res: express.Response) => {
-    req.body.rna_strings.forEach((rs: string) => validate(rs));
-    await create(...req.body.rna_strings);
+  .post("/dna", async (req: express.Request, res: express.Response) => {
+    req.body.dna_strings.forEach((rs: string) => validate(rs));
+    await create(...req.body.dna_strings);
     res.sendStatus(201);
   })
 
-  .get("/rna/search", async (req: express.Request, res: express.Response) => {
+  .get("/dna/search", async (req: express.Request, res: express.Response) => {
     const { search_string, levenshtein } = req.query;
     validate(search_string);
     const results = await search(search_string, levenshtein || 0);

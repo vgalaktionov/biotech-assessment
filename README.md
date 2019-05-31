@@ -1,19 +1,16 @@
-# rna-api
+# dna-api
 
-> REST API for storing and searching RNA strings.
+> REST API for storing and searching DNA strings.
 
 ## Build Setup
 
 ```bash
-# install dependencies
-$ npm install
-
-# migrate database
-$ npm run migrate
-
-# serve with hot reload at localhost:5000
+# serve with hot reload at localhost:80
 $ npm run dev
 
-# build for production and deploy
-$ npm run deploy
+# run tests continuously
+$ npm run test
+
+# build for production
+$ npm run build:prod
 ```

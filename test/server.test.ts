@@ -19,100 +19,100 @@ describe("API", () => {
       .expect(200);
   });
 
-  test("should be able to create single valid rna string", async () => {
-    const rna_strings = ["AAGAUGCCGU"];
+  test("should be able to create single valid dna string", async () => {
+    const dna_strings = ["AAGATGCCGT"];
 
     await request(api)
-      .post("/rna")
-      .send({ rna_strings })
+      .post("/dna")
+      .send({ dna_strings })
       .expect(201);
 
-    const result = await query(sql`SELECT rna_string FROM rna;`);
-    expect(result.rows.map(r => r.rna_string)).toEqual(rna_strings);
+    const result = await query(sql`SELECT dna_string FROM dna;`);
+    expect(result.rows.map(r => r.dna_string)).toEqual(dna_strings);
   });
 
-  test("should be able to create multiple valid rna strings", async () => {
-    const rna_strings = ["AAGAUGCCGU", "AAUUUGCUUGGCAAAUCGUAUGCCUUGGG"];
+  test("should be able to create multiple valid dna strings", async () => {
+    const dna_strings = ["AAGATGCCGT", "AATTTGCTTGGCAAATCGTATGCCTTGGG"];
 
     await request(api)
-      .post("/rna")
-      .send({ rna_strings })
+      .post("/dna")
+      .send({ dna_strings })
       .expect(201);
 
-    const result = await query(sql`SELECT rna_string FROM rna;`);
-    expect(result.rows.map(r => r.rna_string)).toEqual(rna_strings);
+    const result = await query(sql`SELECT dna_string FROM dna;`);
+    expect(result.rows.map(r => r.dna_string)).toEqual(dna_strings);
   });
 
-  test("should error with create on invalid rna string", async () => {
-    const rna_strings = ["XYZ"];
+  test("should error with create on invalid dna string", async () => {
+    const dna_strings = ["XYZ"];
 
     await request(api)
-      .post("/rna")
+      .post("/dna")
       .set("Accept", "application/json")
-      .send({ rna_strings })
-      .expect(400, { status: 400, message: "Invalid RNA string!" });
+      .send({ dna_strings })
+      .expect(400, { status: 400, message: "Invalid DNA string!" });
 
-    const result = await query(sql`SELECT rna_string FROM rna;`);
-    expect(result.rows.map(r => r.rna_string)).toEqual([]);
+    const result = await query(sql`SELECT dna_string FROM dna;`);
+    expect(result.rows.map(r => r.dna_string)).toEqual([]);
   });
 
   test("should be able to do exact search", async () => {
     await query(sql`
-      INSERT INTO rna (rna_string)
+      INSERT INTO dna (dna_string)
       VALUES
-        ('ACGCCUGUUGAGCCU'),
-        ('GCUCCCAGGAUU'),
-        ('GGUAUUCCCUUACCGAAG'),
-        ('CCAAAGCCACCGU'),
-        ('ACUAAGGCUU'),
-        ('CUAGCGGAUUA'),
-        ('CAUUCCGUGA'),
-        ('UUUGCAGUCGUAAG'),
-        ('ACCCUUCAUCCAAUCGGAA'),
-        ('CAGUCAUUGUAGCU');
+        ('ACGCCTGTTGAGCCT'),
+        ('GCTCCCAGGATT'),
+        ('GGTATTCCCTTACCGAAG'),
+        ('CCAAAGCCACCGT'),
+        ('ACTAAGGCTT'),
+        ('CTAGCGGATTA'),
+        ('CATTCCGTGA'),
+        ('TTTGCAGTCGTAAG'),
+        ('ACCCTTCATCCAATCGGAA'),
+        ('CAGTCATTGTAGCT');
     `);
 
     await request(api)
-      .get("/rna/search")
-      .query({ search_string: "GAU" })
+      .get("/dna/search")
+      .query({ search_string: "GAT" })
       .set("Accept", "application/json")
-      .expect(200, ["GCUCCCAGGAUU", "CUAGCGGAUUA"]);
+      .expect(200, ["GCTCCCAGGATT", "CTAGCGGATTA"]);
   });
 
   test("should be able to do fuzzy search", async () => {
     await query(sql`
-      INSERT INTO rna (rna_string)
+      INSERT INTO dna (dna_string)
       VALUES
-        ('ACGCCUGUUGAGCCU'),
-        ('GCUCCCAGGAUU'),
-        ('GGUAUUCCCUUACCGAAG'),
-        ('CCAAAGCCACCGU'),
-        ('ACUAAGGCUU'),
-        ('CUAGCGGAUUA'),
-        ('CAUUCCGUGA'),
-        ('UUUGCAGUCGUAAG'),
-        ('ACCCUUCAUCCAAUCGGAA'),
-        ('CAGUCAUUGUAGCU');
+        ('ACGCCTGTTGAGCCT'),
+        ('GCTCCCAGGATT'),
+        ('GGTATTCCCTTACCGAAG'),
+        ('CCAAAGCCACCGT'),
+        ('ACTAAGGCTT'),
+        ('CTAGCGGATTA'),
+        ('CATTCCGTGA'),
+        ('TTTGCAGTCGTAAG'),
+        ('ACCCTTCATCCAATCGGAA'),
+        ('CAGTCATTGTAGCT');
     `);
 
     await request(api)
-      .get("/rna/search")
-      .query({ search_string: "GAU", levenshtein: 10 })
+      .get("/dna/search")
+      .query({ search_string: "GAT", levenshtein: 10 })
       .set("Accept", "application/json")
       .expect(200, [
-        "CCAAAGCCACCGU",
-        "GCUCCCAGGAUU",
-        "ACUAAGGCUU",
-        "CUAGCGGAUUA",
-        "CAUUCCGUGA"
+        "CCAAAGCCACCGT",
+        "GCTCCCAGGATT",
+        "ACTAAGGCTT",
+        "CTAGCGGATTA",
+        "CATTCCGTGA"
       ]);
   });
 
-  test("should error on search with invalid rna substring", async () => {
+  test("should error on search with invalid dna substring", async () => {
     await request(api)
-      .get("/rna/search")
+      .get("/dna/search")
       .query({ search_string: "OMG" })
       .set("Accept", "application/json")
-      .expect(400, { status: 400, message: "Invalid RNA string!" });
+      .expect(400, { status: 400, message: "Invalid DNA string!" });
   });
 });
